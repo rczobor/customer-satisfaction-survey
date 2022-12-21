@@ -6,6 +6,17 @@ import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
+  const examples = trpc.example.getAll.useQuery();
+  const addMutation = trpc.example.add.useMutation({
+    onSuccess: () => {
+      examples.refetch();
+    },
+  });
+  const deleteMutation = trpc.example.delete.useMutation({
+    onSuccess: () => {
+      examples.refetch();
+    },
+  });
 
   return (
     <>
@@ -19,6 +30,25 @@ const Home: NextPage = () => {
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
           </h1>
+          <ul>
+            {examples.data?.map((example) => (
+              <li className="flex gap-4 text-white" key={example.id}>
+                <div>{example.createdAt.toLocaleString()}</div>
+                <button
+                  onClick={() => deleteMutation.mutate({ id: example.id })}
+                >
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+          <button
+            className="text-white"
+            disabled={addMutation.isLoading}
+            onClick={() => addMutation.mutate()}
+          >
+            add
+          </button>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
