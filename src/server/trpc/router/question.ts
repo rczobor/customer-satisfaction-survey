@@ -4,7 +4,15 @@ import { publicProcedure, router } from "../trpc";
 export const questionRouter = router({
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.question.findMany({
-      include: { answers: true, records: true },
+      orderBy: { createdAt: "asc" },
+      include: {
+        answers: {
+          orderBy: { createdAt: "asc" },
+        },
+        records: {
+          orderBy: { createdAt: "asc" },
+        },
+      },
     });
   }),
   add: publicProcedure
@@ -27,6 +35,22 @@ export const questionRouter = router({
             create: input.answers.map((text) => ({ text })),
           },
         },
+      });
+    }),
+  updateText: publicProcedure
+    .input(z.object({ id: z.string(), text: z.string() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.question.update({
+        where: { id: input.id },
+        data: { text: input.text },
+      });
+    }),
+  updateIsActive: publicProcedure
+    .input(z.object({ id: z.string(), isActive: z.boolean() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.question.update({
+        where: { id: input.id },
+        data: { isActive: input.isActive },
       });
     }),
   delete: publicProcedure
