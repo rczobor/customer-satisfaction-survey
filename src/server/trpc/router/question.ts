@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { publicProcedure, router } from "../trpc";
+import { protectedProcedure, router } from "../trpc";
 
 export const questionRouter = router({
-  getAll: publicProcedure.query(({ ctx }) => {
+  getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.question.findMany({
       orderBy: { createdAt: "asc" },
       include: {
@@ -15,12 +15,12 @@ export const questionRouter = router({
       },
     });
   }),
-  add: publicProcedure
+  add: protectedProcedure
     .input(z.object({ text: z.string() }))
     .mutation(({ ctx, input }) => {
       return ctx.prisma.question.create({ data: { text: input.text } });
     }),
-  addWithAnswers: publicProcedure
+  addWithAnswers: protectedProcedure
     .input(
       z.object({
         text: z.string(),
@@ -37,7 +37,7 @@ export const questionRouter = router({
         },
       });
     }),
-  updateText: publicProcedure
+  updateText: protectedProcedure
     .input(z.object({ id: z.string(), text: z.string() }))
     .mutation(({ ctx, input }) => {
       return ctx.prisma.question.update({
@@ -45,7 +45,7 @@ export const questionRouter = router({
         data: { text: input.text },
       });
     }),
-  updateIsActive: publicProcedure
+  updateIsActive: protectedProcedure
     .input(z.object({ id: z.string(), isActive: z.boolean() }))
     .mutation(({ ctx, input }) => {
       return ctx.prisma.question.update({
@@ -53,7 +53,7 @@ export const questionRouter = router({
         data: { isActive: input.isActive },
       });
     }),
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(({ ctx, input }) => {
       return ctx.prisma.question.delete({ where: { id: input.id } });

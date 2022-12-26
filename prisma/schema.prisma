@@ -16,6 +16,15 @@ model Example {
   updatedAt DateTime @updatedAt
 }
 
+model User {
+  id            String    @id @default(cuid())
+  username      String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String
+}
+
 model Question {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())

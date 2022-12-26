@@ -1,22 +1,22 @@
 import { z } from "zod";
 
-import { router, publicProcedure } from "../trpc";
+import { router, protectedProcedure } from "../trpc";
 
 export const exampleRouter = router({
-  hello: publicProcedure
+  hello: protectedProcedure
     .input(z.object({ text: z.string().nullish() }).nullish())
     .query(({ input }) => {
       return {
         greeting: `Hello ${input?.text ?? "world"}`,
       };
     }),
-  getAll: publicProcedure.query(({ ctx }) => {
+  getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.example.findMany();
   }),
-  add: publicProcedure.mutation(({ ctx }) => {
+  add: protectedProcedure.mutation(({ ctx }) => {
     return ctx.prisma.example.create({ data: {} });
   }),
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(({ ctx, input }) => {
       return ctx.prisma.example.delete({ where: { id: input.id } });
