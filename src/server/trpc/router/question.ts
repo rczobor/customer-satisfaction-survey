@@ -4,17 +4,31 @@ import { protectedProcedure, router } from "../trpc";
 export const questionRouter = router({
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.question.findMany({
-      orderBy: { createdAt: "asc" },
+      orderBy: { index: "asc" },
       include: {
         answers: {
-          orderBy: { createdAt: "asc" },
-        },
-        records: {
-          orderBy: { createdAt: "asc" },
+          orderBy: { index: "asc" },
         },
       },
     });
   }),
+  getByIndex: protectedProcedure
+    .input(z.object({ index: z.number().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const [result, next] = await ctx.prisma.question.findMany({
+        orderBy: { index: "asc" },
+        where: { isActive: true, index: { gte: input.index } },
+        include: {
+          answers: {
+            orderBy: { index: "asc" },
+            where: { isActive: true },
+          },
+        },
+        take: 2,
+      });
+
+      return { result, nextIndex: next?.index };
+    }),
   add: protectedProcedure
     .input(z.object({ text: z.string() }))
     .mutation(({ ctx, input }) => {

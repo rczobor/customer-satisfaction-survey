@@ -1,13 +1,14 @@
 import type { NextPage } from "next";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
-import Question from "../../components/question";
-import { trpc } from "../../utils/trpc";
+import Question from "../components/question";
+import { trpc } from "../utils/trpc";
 
-const Questions: NextPage = () => {
+const EditQuestions: NextPage = () => {
+  const { status } = useSession();
   const [questionText, setQuestionText] = useState("");
   const [answers, setAnswers] = useState([""]);
   const { data, refetch } = trpc.question.getAll.useQuery();
-
   const addWithAnswersMutation = trpc.question.addWithAnswers.useMutation({
     onSuccess: () => {
       refetch();
@@ -15,6 +16,14 @@ const Questions: NextPage = () => {
       setAnswers([""]);
     },
   });
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
+  if (status === "unauthenticated") {
+    return <div>Unauthenticated</div>;
+  }
 
   return (
     <div className="flex flex-col p-4">
@@ -103,4 +112,4 @@ const Questions: NextPage = () => {
   );
 };
 
-export default Questions;
+export default EditQuestions;

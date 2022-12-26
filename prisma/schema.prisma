@@ -31,6 +31,7 @@ model Question {
   updatedAt DateTime @updatedAt
 
   text     String
+  index    Int      @default(autoincrement())
   isActive Boolean  @default(true)
   answers  Answer[]
   records  Record[]
@@ -42,6 +43,7 @@ model Answer {
   updatedAt DateTime @updatedAt
 
   text       String
+  index      Int      @default(autoincrement())
   isActive   Boolean  @default(true)
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String

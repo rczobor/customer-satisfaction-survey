@@ -1,3 +1,4 @@
+import type { NextPage } from "next";
 import { useForm } from "react-hook-form";
 import { trpc } from "../utils/trpc";
 
@@ -7,7 +8,7 @@ type SignUpForm = {
   secret: string;
 };
 
-const SignUp = () => {
+const SignUp: NextPage = () => {
   const { register, handleSubmit } = useForm<SignUpForm>();
   const onSubmit = (data: SignUpForm) => {
     signUp.mutate(data);
@@ -15,12 +16,14 @@ const SignUp = () => {
   const signUp = trpc.auth.signUp.useMutation();
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register("email", { required: true })} />
-      <input {...register("password", { required: true })} />
-      <input {...register("secret", { required: true })} />
-      <input type="submit" />
-    </form>
+    <main>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <input {...register("email", { required: true })} />
+        <input {...register("password", { required: true })} />
+        <input {...register("secret", { required: true })} />
+        <input type="submit" />
+      </form>
+    </main>
   );
 };
 
