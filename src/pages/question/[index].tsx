@@ -20,21 +20,22 @@ const NthQuestion: NextPage = () => {
   }
 
   return (
-    <main className="flex flex-col">
+    <main className="flex min-h-screen flex-col items-center p-6">
       <h1>{data?.result?.text}</h1>
 
-      <div className="flex justify-center gap-6">
+      <div className="flex flex-wrap justify-center gap-6 py-6">
         {data?.result?.answers.map((answer) => (
           <div key={answer.id}>
-            <button className="rounded-md border-2 border-blue-600 p-2 text-lg font-semibold text-blue-600">
+            <button className="rounded-full bg-blue-500/10 px-10 py-3 font-semibold text-blue-600 no-underline transition hover:bg-white/20">
               {answer.text}
             </button>
           </div>
         ))}
       </div>
 
-      <div>
+      <div className="flex w-full justify-between">
         <button
+          className="rounded-full bg-blue-500/10 px-10 py-3 font-semibold text-blue-600 no-underline transition hover:bg-white/20"
           disabled={parsedIndex === 1}
           onClick={() => router.push(`/question/${parsedIndex - 1}`)}
         >
@@ -42,6 +43,7 @@ const NthQuestion: NextPage = () => {
         </button>
 
         <button
+          className="rounded-full bg-blue-500/10 px-10 py-3 font-semibold text-blue-600 no-underline transition hover:bg-white/20"
           disabled={!data.nextIndex}
           onClick={() => router.push(`/question/${parsedIndex + 1}`)}
         >

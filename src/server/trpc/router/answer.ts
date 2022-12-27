@@ -3,10 +3,15 @@ import { protectedProcedure, router } from "../trpc";
 
 export const answerRouter = router({
   add: protectedProcedure
-    .input(z.object({ text: z.string(), questionId: z.string() }))
+    .input(z.object({ questionId: z.string(), text: z.string() }))
     .mutation(({ ctx, input }) => {
       return ctx.prisma.answer.create({
-        data: { text: input.text, questionId: input.questionId },
+        data: {
+          text: input.text,
+          question: {
+            connect: { id: input.questionId },
+          },
+        },
       });
     }),
   updateText: protectedProcedure

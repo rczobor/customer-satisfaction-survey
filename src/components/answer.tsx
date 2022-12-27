@@ -4,12 +4,20 @@ import { trpc } from "../utils/trpc";
 
 const Answer = ({
   answer,
+  questionId,
   refetch,
 }: {
-  answer: Answer;
+  answer?: Answer;
+  questionId: string;
   refetch: () => void;
 }) => {
-  const [text, setText] = useState(answer.text);
+  const [text, setText] = useState(answer?.text ?? "");
+  const addAnswer = trpc.answer.add.useMutation({
+    onSuccess: () => {
+      refetch();
+      setText("");
+    },
+  });
   const updateText = trpc.answer.updateText.useMutation({
     onSuccess: () => {
       refetch();
@@ -43,29 +51,40 @@ const Answer = ({
       <div>
         <button
           className="border border-slate-500 p-1"
-          onClick={() => updateText.mutate({ id: answer.id, text })}
+          onClick={() => {
+            if (!answer) {
+              addAnswer.mutate({ text, questionId });
+              return;
+            }
+
+            updateText.mutate({ id: answer.id, text });
+          }}
         >
-          Update
+          {answer ? "Update" : "Add"}
         </button>
 
-        <button
-          className="border border-slate-500 p-1"
-          onClick={() =>
-            updateIsActive.mutate({
-              id: answer.id,
-              isActive: !answer.isActive,
-            })
-          }
-        >
-          {answer.isActive ? "Deactivate" : "Activate"}
-        </button>
+        {answer && (
+          <>
+            <button
+              className="border border-slate-500 p-1"
+              onClick={() =>
+                updateIsActive.mutate({
+                  id: answer.id,
+                  isActive: !answer.isActive,
+                })
+              }
+            >
+              {answer.isActive ? "Deactivate" : "Activate"}
+            </button>
 
-        <button
-          className="border border-slate-500 p-1"
-          onClick={() => deleteMutation.mutate({ id: answer.id })}
-        >
-          Delete
-        </button>
+            <button
+              className="border border-slate-500 p-1"
+              onClick={() => deleteMutation.mutate({ id: answer.id })}
+            >
+              Delete
+            </button>
+          </>
+        )}
       </div>
     </li>
   );

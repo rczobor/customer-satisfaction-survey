@@ -74,8 +74,14 @@ const Question = ({
 
       <ul>
         {question.answers.map((answer) => (
-          <Answer answer={answer} refetch={refetch} key={answer.id} />
+          <Answer
+            answer={answer}
+            questionId={question.id}
+            refetch={refetch}
+            key={answer.id}
+          />
         ))}
+        <Answer questionId={question.id} refetch={refetch} />
       </ul>
     </li>
   );
