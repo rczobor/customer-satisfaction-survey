@@ -10,7 +10,7 @@ const Finish = () => {
       setCounter((prev) => prev - 1);
 
       if (counter === 0) {
-        router.push("/questions/1");
+        router.push("/question/1");
       }
     }, 1000);
 
