@@ -1,8 +1,8 @@
-import { Question } from "@prisma/client";
 import type { Answer as TAnswer } from "@prisma/client";
+import { Question } from "@prisma/client";
+import { useState } from "react";
 import { trpc } from "../utils/trpc";
 import Answer from "./answer";
-import { useState } from "react";
 
 const Question = ({
   question,

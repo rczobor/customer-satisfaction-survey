@@ -10,6 +10,16 @@ const NthQuestion: NextPage = () => {
     { index: parsedIndex },
     { enabled: typeof index === "string" }
   );
+  const addMutation = trpc.record.add.useMutation({
+    onSuccess: () => {
+      if (!data?.nextIndex) {
+        router.push("/question/finish");
+        return;
+      }
+
+      router.push(`/question/${parsedIndex + 1}`);
+    },
+  });
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -20,13 +30,23 @@ const NthQuestion: NextPage = () => {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-6">
-      <h1>{data?.result?.text}</h1>
+    <main className="flex min-h-screen flex-col items-center justify-between p-6">
+      <h1 className="text-3xl font-semibold text-blue-600">
+        {data?.result?.text}
+      </h1>
 
       <div className="flex flex-wrap justify-center gap-6 py-6">
         {data?.result?.answers.map((answer) => (
           <div key={answer.id}>
-            <button className="rounded-full bg-blue-500/10 px-10 py-3 font-semibold text-blue-600 no-underline transition hover:bg-white/20">
+            <button
+              className=" rounded-full bg-blue-500/10 px-10 py-3 text-3xl font-semibold text-blue-600 no-underline transition hover:bg-white/20"
+              onClick={() => {
+                addMutation.mutate({
+                  answerId: answer.id,
+                  questionId: answer.questionId,
+                });
+              }}
+            >
               {answer.text}
             </button>
           </div>
@@ -39,7 +59,7 @@ const NthQuestion: NextPage = () => {
           disabled={parsedIndex === 1}
           onClick={() => router.push(`/question/${parsedIndex - 1}`)}
         >
-          Previous
+          Kihagyás
         </button>
 
         <button
@@ -47,7 +67,7 @@ const NthQuestion: NextPage = () => {
           disabled={!data.nextIndex}
           onClick={() => router.push(`/question/${parsedIndex + 1}`)}
         >
-          Next
+          Vissza
         </button>
       </div>
     </main>
