@@ -35,11 +35,11 @@ const NthQuestion: NextPage = () => {
         {data?.result?.text}
       </h1>
 
-      <div className="flex flex-wrap justify-center gap-6 py-6">
+      <div className="flex w-full flex-wrap justify-evenly gap-2 py-6">
         {data?.result?.answers.map((answer) => (
           <div key={answer.id}>
             <button
-              className="rounded-full bg-blue-500/10 px-10 py-3 text-3xl font-semibold text-blue-600 no-underline transition hover:bg-white/20"
+              className="rounded-md bg-blue-600/10 px-4 py-2 text-3xl font-semibold text-blue-600"
               onClick={() => {
                 addMutation.mutate({
                   answerId: answer.id,
@@ -59,7 +59,7 @@ const NthQuestion: NextPage = () => {
           disabled={parsedIndex === 1}
           onClick={() => router.push(`/question/${parsedIndex - 1}`)}
         >
-          Kihagyás
+          Vissza
         </button>
 
         <button
@@ -67,7 +67,7 @@ const NthQuestion: NextPage = () => {
           disabled={!data.nextIndex}
           onClick={() => router.push(`/question/${parsedIndex + 1}`)}
         >
-          Vissza
+          Kihagyás
         </button>
       </div>
     </main>
