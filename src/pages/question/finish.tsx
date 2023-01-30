@@ -17,7 +17,7 @@ const Finish = () => {
     return () => clearInterval(interval);
   }, [counter, router]);
   return (
-    <div className="flex min-h-screen flex-col items-center justify-around p-6 text-center text-3xl font-semibold text-blue-600">
+    <div className="flex min-h-screen flex-col items-center justify-around p-6 text-center text-3xl font-semibold text-primary">
       <h1>A válaszait rögzítettük. Köszönjük, hogy kitöltötte kérdőívünket!</h1>
       <h1>A kérdőív újraindul {counter} másopercen belül.</h1>
     </div>
