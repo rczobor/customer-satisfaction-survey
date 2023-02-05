@@ -16,4 +16,16 @@ export const recordRouter = router({
         },
       });
     }),
+  addInputAnswer: protectedProcedure
+    .input(z.object({ questionId: z.string(), text: z.string() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.record.create({
+        data: {
+          text: input.text,
+          question: {
+            connect: { id: input.questionId },
+          },
+        },
+      });
+    }),
 });

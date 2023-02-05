@@ -22,6 +22,11 @@ const Question = ({
       refetch();
     },
   });
+  const updateIsInput = trpc.question.updateIsInput.useMutation({
+    onSuccess: () => {
+      refetch();
+    },
+  });
   const deleteMutation = trpc.question.delete.useMutation({
     onSuccess: () => {
       refetch();
@@ -66,23 +71,37 @@ const Question = ({
 
         <button
           className="border border-slate-500 p-1"
+          onClick={() =>
+            updateIsInput.mutate({
+              id: question.id,
+              isInput: !question.isInput,
+            })
+          }
+        >
+          {question.isInput ? "Fixed" : "Input"}
+        </button>
+
+        <button
+          className="border border-slate-500 p-1"
           onClick={() => deleteMutation.mutate({ id: question.id })}
         >
           Delete
         </button>
       </div>
 
-      <ul>
-        {question.answers.map((answer) => (
-          <Answer
-            answer={answer}
-            questionId={question.id}
-            refetch={refetch}
-            key={answer.id}
-          />
-        ))}
-        <Answer questionId={question.id} refetch={refetch} />
-      </ul>
+      {!question.isInput && (
+        <ul>
+          {question.answers.map((answer) => (
+            <Answer
+              answer={answer}
+              questionId={question.id}
+              refetch={refetch}
+              key={answer.id}
+            />
+          ))}
+          <Answer questionId={question.id} refetch={refetch} />
+        </ul>
+      )}
     </li>
   );
 };

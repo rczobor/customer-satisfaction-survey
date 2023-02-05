@@ -1,16 +1,28 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
 import { trpc } from "../../utils/trpc";
 
 const NthQuestion: NextPage = () => {
   const router = useRouter();
   const { index } = router.query;
   const parsedIndex = Number(index);
+  const { register, handleSubmit } = useForm();
   const { data, isLoading, error } = trpc.question.getByIndex.useQuery(
     { index: parsedIndex },
     { enabled: typeof index === "string" }
   );
   const addMutation = trpc.record.add.useMutation({
+    onMutate: () => {
+      if (!data?.nextIndex) {
+        router.push("/question/finish");
+        return;
+      }
+
+      router.push(`/question/${parsedIndex + 1}`);
+    },
+  });
+  const addInputAnswer = trpc.record.addInputAnswer.useMutation({
     onMutate: () => {
       if (!data?.nextIndex) {
         router.push("/question/finish");
@@ -44,22 +56,49 @@ const NthQuestion: NextPage = () => {
         ></button>
       </div>
 
-      <div className="flex w-full flex-wrap justify-evenly gap-2 py-6 px-2">
-        {data?.result?.answers.map((answer) => (
-          <div key={answer.id}>
-            <button
+      <div className="flex w-full flex-wrap justify-center gap-4 py-6 px-2">
+        {data.result?.isInput ? (
+          <form
+            onSubmit={handleSubmit((form) => {
+              if (!data.result?.id) {
+                return;
+              }
+
+              addInputAnswer.mutate({
+                questionId: data.result.id,
+                text: form.answer,
+              });
+            })}
+          >
+            <input
               className="rounded-md border bg-green-50 px-4 py-2 text-3xl font-semibold text-primary shadow-lg transition hover:bg-primary hover:text-white"
-              onClick={() => {
-                addMutation.mutate({
-                  answerId: answer.id,
-                  questionId: answer.questionId,
-                });
-              }}
-            >
-              {answer.text}
-            </button>
-          </div>
-        ))}
+              type="text"
+              {...register("answer", { required: true })}
+              placeholder="Írd be a választ"
+            />
+            <input
+              className="cursor-pointer rounded-md border bg-green-50 px-4 py-2 text-3xl font-semibold text-primary shadow-lg transition hover:bg-primary hover:text-white"
+              type="submit"
+              value="Kész"
+            />
+          </form>
+        ) : (
+          data?.result?.answers.map((answer) => (
+            <div key={answer.id}>
+              <button
+                className="rounded-md border bg-green-50 px-6 py-2 text-3xl font-semibold text-primary shadow-lg transition hover:bg-primary hover:text-white"
+                onClick={() => {
+                  addMutation.mutate({
+                    answerId: answer.id,
+                    questionId: answer.questionId,
+                  });
+                }}
+              >
+                {answer.text}
+              </button>
+            </div>
+          ))
+        )}
       </div>
 
       <div className="flex w-full justify-between">
