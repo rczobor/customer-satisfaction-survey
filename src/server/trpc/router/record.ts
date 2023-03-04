@@ -28,4 +28,7 @@ export const recordRouter = router({
         },
       });
     }),
+  deleteAll: protectedProcedure.mutation(({ ctx }) => {
+    return ctx.prisma.record.deleteMany();
+  }),
 });

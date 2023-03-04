@@ -10,12 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Example {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model User {
   id            String    @id @default(cuid())
   username      String?
@@ -34,6 +28,7 @@ model Question {
   index    Int      @default(autoincrement())
   isActive Boolean  @default(true)
   isInput  Boolean  @default(false)
+  isSmiley Boolean  @default(false)
   answers  Answer[]
   records  Record[]
 }
@@ -61,4 +56,14 @@ model Record {
   answerId   String?
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
+  Person     Person?  @relation(fields: [personId], references: [id], onDelete: Cascade)
+  personId   String?
+}
+
+model Person {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  records Record[]
 }

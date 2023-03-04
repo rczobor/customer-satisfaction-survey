@@ -67,12 +67,20 @@ export const questionRouter = router({
         data: { isActive: input.isActive },
       });
     }),
-    updateIsInput: protectedProcedure
+  updateIsInput: protectedProcedure
     .input(z.object({ id: z.string(), isInput: z.boolean() }))
     .mutation(({ ctx, input }) => {
       return ctx.prisma.question.update({
         where: { id: input.id },
         data: { isInput: input.isInput },
+      });
+    }),
+  updateIsSmiley: protectedProcedure
+    .input(z.object({ id: z.string(), isSmiley: z.boolean() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.question.update({
+        where: { id: input.id },
+        data: { isSmiley: input.isSmiley },
       });
     }),
   delete: protectedProcedure

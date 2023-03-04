@@ -27,6 +27,11 @@ const Question = ({
       refetch();
     },
   });
+  const updateIsSmiley = trpc.question.updateIsSmiley.useMutation({
+    onSuccess: () => {
+      refetch();
+    },
+  });
   const deleteMutation = trpc.question.delete.useMutation({
     onSuccess: () => {
       refetch();
@@ -79,6 +84,18 @@ const Question = ({
           }
         >
           {question.isInput ? "Fixed" : "Input"}
+        </button>
+
+        <button
+          className="border border-slate-500 p-1"
+          onClick={() =>
+            updateIsSmiley.mutate({
+              id: question.id,
+              isSmiley: !question.isSmiley,
+            })
+          }
+        >
+          {question.isSmiley ? "Regular" : "Smiley"}
         </button>
 
         <button
