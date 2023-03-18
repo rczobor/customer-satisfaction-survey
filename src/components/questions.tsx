@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { trpc } from "../utils/trpc";
+import Spinner from "./spinner";
 import { Button } from "./ui/button";
 
 // Amount of seconds before the user is redirected to the first question
@@ -11,7 +12,7 @@ const TIMEOUT = 180;
 
 const Questions = () => {
   const { push } = useRouter();
-  const { data } = trpc.question.getAll.useQuery();
+  const { data, isLoading } = trpc.question.getAll.useQuery();
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<{
     [key: string]: { isInput: boolean; answer: string };
@@ -52,8 +53,12 @@ const Questions = () => {
     }
   }, [data, index, answers, mutate, push]);
 
+  if (isLoading) {
+    return <Spinner />;
+  }
+
   if (!data) {
-    return <div>Loading...</div>;
+    return <div>Hiba</div>;
   }
 
   return (

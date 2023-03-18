@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import EditQuestion from "../components/edit-question";
+import Spinner from "../components/spinner";
 import { Button } from "../components/ui/button";
 import { trpc } from "../utils/trpc";
 
@@ -20,7 +21,7 @@ const Admin: NextPage = () => {
   const deleteAllPersonsMutation = trpc.person.deleteAll.useMutation();
 
   if (status === "loading") {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
 
   if (status === "unauthenticated") {
