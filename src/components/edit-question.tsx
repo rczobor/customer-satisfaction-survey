@@ -80,7 +80,7 @@ const EditQuestion = ({
             })
           }
         >
-          {question.isInput ? "Fixed" : "Input"}
+          {question.isInput ? "Selection" : "Input"}
         </Button>
 
         <Button

@@ -13,7 +13,7 @@ const Home: NextPage = () => {
   }
 
   if (status === "unauthenticated") {
-    replace("/sign-in");
+    replace("/auth/sign-in");
 
     return <div>Unauthenticated</div>;
   }

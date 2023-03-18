@@ -35,6 +35,9 @@ export const authOptions: NextAuthOptions = {
       return baseUrl;
     },
   },
+  pages: {
+    signIn: "/auth/sign-in",
+  },
 
   // Configure one or more authentication providers
   providers: [
