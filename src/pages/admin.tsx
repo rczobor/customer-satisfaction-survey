@@ -4,7 +4,7 @@ import { useState } from "react";
 import Question from "../components/question";
 import { trpc } from "../utils/trpc";
 
-const EditQuestions: NextPage = () => {
+const Admin: NextPage = () => {
   const { status } = useSession();
   const [questionText, setQuestionText] = useState("");
   const [answers, setAnswers] = useState([""]);
@@ -16,17 +16,28 @@ const EditQuestions: NextPage = () => {
       setAnswers([""]);
     },
   });
+  // const deleteAllPersonsMutation = trpc.person.deleteAll.useMutation();
 
   if (status === "loading") {
     return <div>Loading...</div>;
   }
 
   if (status === "unauthenticated") {
-    return <div>Unauthenticated</div>;
+    return <div>Access denied</div>;
   }
 
   return (
     <div className="flex flex-col p-4">
+      {/* DELETE ALL RECORDS */}
+      {/* <div>
+        <button
+          className="border border-slate-500 bg-red-400 p-1"
+          onClick={() => deleteAllPersonsMutation.mutate()}
+        >
+          Delete All Persons
+        </button>
+      </div> */}
+
       <h1>Questions</h1>
 
       <ul>
@@ -112,4 +123,4 @@ const EditQuestions: NextPage = () => {
   );
 };
 
-export default EditQuestions;
+export default Admin;
