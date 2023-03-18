@@ -11,7 +11,7 @@ import { trpc } from "../utils/trpc";
 const Admin: NextPage = () => {
   const { status } = useSession();
   const [questionText, setQuestionText] = useState("");
-  const [answers, setAnswers] = useState([""]);
+  const [answers, setAnswers] = useState(["", ""]);
   const { data, refetch } = trpc.question.getAll.useQuery();
   const addWithAnswersMutation = trpc.question.addWithAnswers.useMutation({
     onSuccess: () => {
@@ -45,6 +45,7 @@ const Admin: NextPage = () => {
         {data?.map((question) => (
           <EditQuestion
             question={question}
+            isLast={data.length - 1 === question.index}
             refetch={refetch}
             key={question.id}
           />
@@ -96,7 +97,7 @@ const Admin: NextPage = () => {
             disabled={
               addWithAnswersMutation.isLoading ||
               questionText === "" ||
-              answers.filter((answer) => answer !== "").length === 0
+              answers.filter((answer) => answer !== "").length < 2
             }
             onClick={() => {
               addWithAnswersMutation.mutate({

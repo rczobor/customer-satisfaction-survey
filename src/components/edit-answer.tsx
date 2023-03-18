@@ -1,4 +1,5 @@
 import type { Answer } from "@prisma/client";
+import { ArrowDown, ArrowUp, Save, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { trpc } from "../utils/trpc";
 import { Button } from "./ui/button";
@@ -6,20 +7,17 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
 const EditAnswer = ({
-  answer,
   questionId,
+  answer,
+  isLast,
   refetch,
 }: {
-  answer?: Answer;
   questionId: string;
+  answer: Answer;
+  isLast: boolean;
   refetch: () => void;
 }) => {
   const [text, setText] = useState(answer?.text ?? "");
-  const addAnswer = trpc.answer.add.useMutation({
-    onSuccess: () => {
-      refetch();
-    },
-  });
   const updateText = trpc.answer.updateText.useMutation({
     onSuccess: () => {
       refetch();
@@ -35,20 +33,16 @@ const EditAnswer = ({
       refetch();
     },
   });
-
-  if (!answer) {
-    return (
-      <li className="flex gap-2 py-1">
-        <Button
-          onClick={() => {
-            addAnswer.mutate({ questionId });
-          }}
-        >
-          Add
-        </Button>
-      </li>
-    );
-  }
+  const moveUpByIndex = trpc.answer.moveUpByIndex.useMutation({
+    onSuccess: () => {
+      refetch();
+    },
+  });
+  const moveDownByIndex = trpc.answer.moveDownByIndex.useMutation({
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
   return (
     <li className="flex gap-2 py-1">
@@ -72,7 +66,7 @@ const EditAnswer = ({
             updateText.mutate({ id: answer.id, text });
           }}
         >
-          Update
+          <Save />
         </Button>
 
         {answer && (
@@ -88,8 +82,39 @@ const EditAnswer = ({
               {answer.isActive ? "Deactivate" : "Activate"}
             </Button>
 
-            <Button onClick={() => deleteMutation.mutate({ id: answer.id })}>
-              Delete
+            <Button
+              disabled={answer.index === 0}
+              onClick={() => {
+                moveUpByIndex.mutate({
+                  questionId,
+                  id: answer.id,
+                  index: answer.index,
+                });
+              }}
+            >
+              <ArrowUp />
+            </Button>
+
+            <Button
+              disabled={isLast}
+              onClick={() => {
+                moveDownByIndex.mutate({
+                  questionId,
+                  id: answer.id,
+                  index: answer.index,
+                });
+              }}
+            >
+              <ArrowDown />
+            </Button>
+
+            <Button
+              variant="destructive"
+              onClick={() =>
+                deleteMutation.mutate({ id: answer.id, index: answer.index })
+              }
+            >
+              <Trash2 />
             </Button>
           </>
         )}

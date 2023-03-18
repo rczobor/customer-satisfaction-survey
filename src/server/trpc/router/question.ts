@@ -67,25 +67,65 @@ export const questionRouter = router({
         data: { isActive: input.isActive },
       });
     }),
-  updateIsInput: protectedProcedure
-    .input(z.object({ id: z.string(), isInput: z.boolean() }))
+  updateIsDefault: protectedProcedure
+    .input(z.object({ id: z.string() }))
     .mutation(({ ctx, input }) => {
       return ctx.prisma.question.update({
         where: { id: input.id },
-        data: { isInput: input.isInput },
+        data: { isInput: false, isSmiley: false },
       });
     }),
-  updateIsSmiley: protectedProcedure
-    .input(z.object({ id: z.string(), isSmiley: z.boolean() }))
+  makeInput: protectedProcedure
+    .input(z.object({ id: z.string() }))
     .mutation(({ ctx, input }) => {
       return ctx.prisma.question.update({
         where: { id: input.id },
-        data: { isSmiley: input.isSmiley },
+        data: { isInput: true, isSmiley: false },
+      });
+    }),
+  makeSmiley: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.question.update({
+        where: { id: input.id },
+        data: { isSmiley: true, isInput: false },
       });
     }),
   delete: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(({ ctx, input }) => {
-      return ctx.prisma.question.delete({ where: { id: input.id } });
+    .input(z.object({ id: z.string(), index: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.question.delete({ where: { id: input.id } });
+      await ctx.prisma.question.updateMany({
+        where: { index: { gt: input.index } },
+        data: { index: { decrement: 1 } },
+      });
+    }),
+  moveUpByIndex: protectedProcedure
+    .input(z.object({ id: z.string(), index: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.question.update({
+        where: { id: input.id },
+        data: { index: { decrement: 1 } },
+      });
+      await ctx.prisma.question.updateMany({
+        where: {
+          AND: [{ index: input.index - 1 }, { id: { not: input.id } }],
+        },
+        data: { index: { increment: 1 } },
+      });
+    }),
+  moveDownByIndex: protectedProcedure
+    .input(z.object({ id: z.string(), index: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.question.update({
+        where: { id: input.id },
+        data: { index: { increment: 1 } },
+      });
+      await ctx.prisma.question.updateMany({
+        where: {
+          AND: [{ index: input.index + 1 }, { id: { not: input.id } }],
+        },
+        data: { index: { decrement: 1 } },
+      });
     }),
 });
