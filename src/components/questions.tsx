@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { trpc } from "../utils/trpc";
 
+// Amount of seconds before the user is redirected to the first question
 const TIMEOUT = 180;
 
 const Questions = () => {
@@ -24,6 +25,7 @@ const Questions = () => {
         ...prev,
         [questionId]: { isInput, answer },
       }));
+      setTimeLeft(TIMEOUT);
     },
     []
   );
@@ -43,23 +45,14 @@ const Questions = () => {
   }, [timeLeft, index]);
 
   useEffect(() => {
-    if (!data) {
-      return;
-    }
-
-    if (data.length === index) {
+    if (data?.length === index) {
       mutate(answers);
+      push("/finished");
     }
   }, [data, index, answers, mutate]);
 
   if (!data) {
     return <div>Loading...</div>;
-  }
-
-  if (data.length === index) {
-    push("/finished");
-
-    return <div>Finished</div>;
   }
 
   return (
