@@ -1,8 +1,10 @@
+import Spinner from "@/src/components/spinner";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import type { NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 type SignInForm = {
@@ -11,11 +13,23 @@ type SignInForm = {
 };
 
 const SignIn: NextPage = () => {
+  const [loading, setLoading] = useState(false);
   const { register, handleSubmit } = useForm<SignInForm>();
   const { data: sessionData } = useSession();
-  const onSubmit = (data: SignInForm) => {
-    signIn("credentials", { email: data.email, password: data.password });
+  const onSubmit = async (data: SignInForm) => {
+    setLoading(true);
+    const res = await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+    });
+    setLoading(false);
+
+    if (res?.error) console.error(res.error);
   };
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   if (sessionData) {
     return (

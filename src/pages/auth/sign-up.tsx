@@ -1,5 +1,7 @@
+import Spinner from "@/src/components/spinner";
 import { Label } from "@radix-ui/react-label";
 import type { NextPage } from "next";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -12,11 +14,20 @@ type SignUpForm = {
 };
 
 const SignUp: NextPage = () => {
+  const [loading, setLoading] = useState(false);
   const { register, handleSubmit } = useForm<SignUpForm>();
-  const onSubmit = (data: SignUpForm) => {
-    signUp.mutate(data);
-  };
   const signUp = trpc.auth.signUp.useMutation();
+  const onSubmit = (data: SignUpForm) => {
+    setLoading(true);
+    signUp.mutate(data);
+    setLoading(false);
+  };
+
+  // TODO Add toast notification for errors and success
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <main className="flex justify-center pt-8">
