@@ -1,4 +1,4 @@
-import { Answer } from "@prisma/client";
+import type { Answer } from "@prisma/client";
 import { useState } from "react";
 import { trpc } from "../utils/trpc";
 import { Button } from "./ui/button";

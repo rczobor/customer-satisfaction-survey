@@ -50,7 +50,7 @@ const Questions = () => {
       mutate(answers);
       push("/finished");
     }
-  }, [data, index, answers, mutate]);
+  }, [data, index, answers, mutate, push]);
 
   if (!data) {
     return <div>Loading...</div>;
