@@ -1,10 +1,10 @@
 import type { Answer as TAnswer } from "@prisma/client";
-import { Question } from "@prisma/client";
+import type { Question } from "@prisma/client";
 import { useState } from "react";
 import { trpc } from "../utils/trpc";
-import Answer from "./answer";
+import Answer from "./edit-answer";
 
-const Question = ({
+const EditQuestion = ({
   question,
   refetch,
 }: {
@@ -123,4 +123,4 @@ const Question = ({
   );
 };
 
-export default Question;
+export default EditQuestion;

@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import Question from "../components/question";
+import EditQuestion from "../components/edit-question";
 import { trpc } from "../utils/trpc";
 
 const Admin: NextPage = () => {
@@ -42,7 +42,11 @@ const Admin: NextPage = () => {
 
       <ul>
         {data?.map((question) => (
-          <Question question={question} refetch={refetch} key={question.id} />
+          <EditQuestion
+            question={question}
+            refetch={refetch}
+            key={question.id}
+          />
         ))}
       </ul>
 

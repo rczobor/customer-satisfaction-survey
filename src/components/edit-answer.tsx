@@ -2,7 +2,7 @@ import { Answer } from "@prisma/client";
 import { useState } from "react";
 import { trpc } from "../utils/trpc";
 
-const Answer = ({
+const EditAnswer = ({
   answer,
   questionId,
   refetch,
@@ -90,4 +90,4 @@ const Answer = ({
   );
 };
 
-export default Answer;
+export default EditAnswer;

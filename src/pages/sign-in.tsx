@@ -12,7 +12,7 @@ const SignIn: NextPage = () => {
 
 export default SignIn;
 
-const AuthShowcase: React.FC = () => {
+const AuthShowcase = () => {
   const { data: sessionData } = useSession();
 
   const { data: secretMessage } = trpc.auth.getSecretMessage.useQuery(
@@ -27,7 +27,7 @@ const AuthShowcase: React.FC = () => {
         {secretMessage && <span> - {secretMessage}</span>}
       </p>
       <button
-        className="rounded-full bg-blue-500/10 px-10 py-3 font-semibold text-blue-600 no-underline transition hover:bg-white/20"
+        className="rounded-md border-4 border-primary px-4 py-2 text-3xl text-primary"
         onClick={sessionData ? () => signOut() : () => signIn()}
       >
         {sessionData ? "Sign out" : "Sign in"}
