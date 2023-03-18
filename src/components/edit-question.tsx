@@ -3,6 +3,8 @@ import { useState } from "react";
 import { trpc } from "../utils/trpc";
 import EditAnswer from "./edit-answer";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 
 const EditQuestion = ({
   question,
@@ -41,17 +43,19 @@ const EditQuestion = ({
   return (
     <li className="my-2 flex flex-col gap-2 py-4">
       <div className="flex gap-2">
-        <label>
-          Question text:
-          <input
+        <fieldset className="flex items-center gap-2 text-center">
+          <Label htmlFor={`question-text-input-${question.id}`}>
+            Question text
+          </Label>
+          <Input
+            id={`question-text-input-${question.id}`}
             type="text"
-            className="mx-4 border border-slate-500"
             value={questionText}
             onChange={(e) => {
               setQuestionText(e.target.value);
             }}
           />
-        </label>
+        </fieldset>
 
         <Button
           onClick={() =>

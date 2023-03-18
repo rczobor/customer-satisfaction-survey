@@ -29,11 +29,6 @@ export const questionRouter = router({
 
       return { result, nextIndex: next?.index };
     }),
-  add: protectedProcedure
-    .input(z.object({ text: z.string() }))
-    .mutation(({ ctx, input }) => {
-      return ctx.prisma.question.create({ data: { text: input.text } });
-    }),
   addWithAnswers: protectedProcedure
     .input(
       z.object({
@@ -41,12 +36,17 @@ export const questionRouter = router({
         answers: z.array(z.string().min(1)),
       })
     )
-    .mutation(({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const { _count: questionCount } = await ctx.prisma.question.aggregate({
+        _count: true,
+      });
+
       return ctx.prisma.question.create({
         data: {
           text: input.text,
+          index: questionCount,
           answers: {
-            create: input.answers.map((text) => ({ text })),
+            create: input.answers.map((text, index) => ({ text, index })),
           },
         },
       });

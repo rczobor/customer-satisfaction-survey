@@ -2,6 +2,8 @@ import type { Answer } from "@prisma/client";
 import { useState } from "react";
 import { trpc } from "../utils/trpc";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 
 const EditAnswer = ({
   answer,
@@ -16,7 +18,6 @@ const EditAnswer = ({
   const addAnswer = trpc.answer.add.useMutation({
     onSuccess: () => {
       refetch();
-      setText("");
     },
   });
   const updateText = trpc.answer.updateText.useMutation({
@@ -35,32 +36,43 @@ const EditAnswer = ({
     },
   });
 
+  if (!answer) {
+    return (
+      <li className="flex gap-2 py-1">
+        <Button
+          onClick={() => {
+            addAnswer.mutate({ questionId });
+          }}
+        >
+          Add
+        </Button>
+      </li>
+    );
+  }
+
   return (
     <li className="flex gap-2 py-1">
-      <label>
-        Answer:
-        <input
+      <fieldset className="flex items-center gap-2 text-center">
+        <Label htmlFor={`answer-text-input-${answer.id}`}>
+          {answer.index + 1}# Answer
+        </Label>
+        <Input
+          id={`answer-text-input-${answer.id}`}
           type="text"
-          className="mx-4 border border-slate-500"
           value={text}
           onChange={(e) => {
             setText(e.target.value);
           }}
         />
-      </label>
+      </fieldset>
 
       <div className="flex gap-2">
         <Button
           onClick={() => {
-            if (!answer) {
-              addAnswer.mutate({ text, questionId });
-              return;
-            }
-
             updateText.mutate({ id: answer.id, text });
           }}
         >
-          {answer ? "Update" : "Add"}
+          Update
         </Button>
 
         {answer && (

@@ -3,11 +3,18 @@ import { protectedProcedure, router } from "../trpc";
 
 export const answerRouter = router({
   add: protectedProcedure
-    .input(z.object({ questionId: z.string(), text: z.string() }))
-    .mutation(({ ctx, input }) => {
+    .input(z.object({ questionId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { _count: answerCount } = await ctx.prisma.answer.aggregate({
+        _count: true,
+        where: { questionId: input.questionId },
+      });
+
       return ctx.prisma.answer.create({
         data: {
-          text: input.text,
+          text: "",
+          isActive: false,
+          index: answerCount,
           question: {
             connect: { id: input.questionId },
           },
