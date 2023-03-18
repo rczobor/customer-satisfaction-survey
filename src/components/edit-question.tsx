@@ -1,14 +1,14 @@
-import type { Answer as TAnswer } from "@prisma/client";
-import { Question } from "@prisma/client";
+import type { Answer, Question } from "@prisma/client";
 import { useState } from "react";
 import { trpc } from "../utils/trpc";
-import Answer from "./answer";
+import EditAnswer from "./edit-answer";
+import { Button } from "./ui/button";
 
-const Question = ({
+const EditQuestion = ({
   question,
   refetch,
 }: {
-  question: Question & { answers: TAnswer[] };
+  question: Question & { answers: Answer[] };
   refetch: () => void;
 }) => {
   const [questionText, setQuestionText] = useState(question.text);
@@ -39,8 +39,8 @@ const Question = ({
   });
 
   return (
-    <li className="my-2 flex flex-col gap-2  py-4">
-      <div>
+    <li className="my-2 flex flex-col gap-2 py-4">
+      <div className="flex gap-2">
         <label>
           Question text:
           <input
@@ -53,17 +53,15 @@ const Question = ({
           />
         </label>
 
-        <button
-          className="border border-slate-500 p-1"
+        <Button
           onClick={() =>
             updateText.mutate({ id: question.id, text: questionText })
           }
         >
           Update
-        </button>
+        </Button>
 
-        <button
-          className="border border-slate-500 p-1"
+        <Button
           onClick={() =>
             updateIsActive.mutate({
               id: question.id,
@@ -72,10 +70,9 @@ const Question = ({
           }
         >
           {question.isActive ? "Deactivate" : "Activate"}
-        </button>
+        </Button>
 
-        <button
-          className="border border-slate-500 p-1"
+        <Button
           onClick={() =>
             updateIsInput.mutate({
               id: question.id,
@@ -83,11 +80,10 @@ const Question = ({
             })
           }
         >
-          {question.isInput ? "Fixed" : "Input"}
-        </button>
+          {question.isInput ? "Selection" : "Input"}
+        </Button>
 
-        <button
-          className="border border-slate-500 p-1"
+        <Button
           onClick={() =>
             updateIsSmiley.mutate({
               id: question.id,
@@ -96,31 +92,28 @@ const Question = ({
           }
         >
           {question.isSmiley ? "Regular" : "Smiley"}
-        </button>
+        </Button>
 
-        <button
-          className="border border-slate-500 p-1"
-          onClick={() => deleteMutation.mutate({ id: question.id })}
-        >
+        <Button onClick={() => deleteMutation.mutate({ id: question.id })}>
           Delete
-        </button>
+        </Button>
       </div>
 
       {!question.isInput && (
         <ul>
           {question.answers.map((answer) => (
-            <Answer
+            <EditAnswer
               answer={answer}
               questionId={question.id}
               refetch={refetch}
               key={answer.id}
             />
           ))}
-          <Answer questionId={question.id} refetch={refetch} />
+          <EditAnswer questionId={question.id} refetch={refetch} />
         </ul>
       )}
     </li>
   );
 };
 
-export default Question;
+export default EditQuestion;

@@ -3,19 +3,18 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Questions from "../components/questions";
+import Spinner from "../components/spinner";
 
 const Home: NextPage = () => {
   const { status } = useSession();
   const { replace } = useRouter();
 
   if (status === "loading") {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
 
   if (status === "unauthenticated") {
-    replace("/sign-in");
-
-    return <div>Unauthenticated</div>;
+    replace("/auth/sign-in");
   }
 
   if (status === "authenticated") {

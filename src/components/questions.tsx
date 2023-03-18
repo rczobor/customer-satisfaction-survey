@@ -4,12 +4,15 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { trpc } from "../utils/trpc";
+import Spinner from "./spinner";
+import { Button } from "./ui/button";
 
+// Amount of seconds before the user is redirected to the first question
 const TIMEOUT = 180;
 
 const Questions = () => {
   const { push } = useRouter();
-  const { data } = trpc.question.getAll.useQuery();
+  const { data, isLoading } = trpc.question.getAll.useQuery();
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<{
     [key: string]: { isInput: boolean; answer: string };
@@ -24,6 +27,7 @@ const Questions = () => {
         ...prev,
         [questionId]: { isInput, answer },
       }));
+      setTimeLeft(TIMEOUT);
     },
     []
   );
@@ -43,35 +47,31 @@ const Questions = () => {
   }, [timeLeft, index]);
 
   useEffect(() => {
-    if (!data) {
-      return;
-    }
-
-    if (data.length === index) {
+    if (data?.length === index) {
       mutate(answers);
+      push("/finished");
     }
-  }, [data, index, answers, mutate]);
+  }, [data, index, answers, mutate, push]);
 
-  if (!data) {
-    return <div>Loading...</div>;
+  if (isLoading) {
+    return <Spinner />;
   }
 
-  if (data.length === index) {
-    push("/finished");
-
-    return <div>Finished</div>;
+  if (!data) {
+    return <div>Hiba</div>;
   }
 
   return (
     <>
       {index > 0 && (
         <div className="absolute flex w-full p-8">
-          <button
+          <Button
             onClick={() => setIndex((current) => current - 1)}
-            className="rounded-md border-4 border-primary px-4 py-2 text-3xl text-primary"
+            className="h-14 rounded-md border-4 border-primary px-4 py-2 text-3xl text-primary"
+            variant="outline"
           >
             Vissza
-          </button>
+          </Button>
         </div>
       )}
       <NthQuestion question={data[index]} next={nextQuestion} />;

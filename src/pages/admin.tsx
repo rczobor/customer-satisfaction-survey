@@ -1,10 +1,12 @@
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import Question from "../components/question";
+import EditQuestion from "../components/edit-question";
+import Spinner from "../components/spinner";
+import { Button } from "../components/ui/button";
 import { trpc } from "../utils/trpc";
 
-const EditQuestions: NextPage = () => {
+const Admin: NextPage = () => {
   const { status } = useSession();
   const [questionText, setQuestionText] = useState("");
   const [answers, setAnswers] = useState([""]);
@@ -16,22 +18,37 @@ const EditQuestions: NextPage = () => {
       setAnswers([""]);
     },
   });
+  const deleteAllPersonsMutation = trpc.person.deleteAll.useMutation();
 
   if (status === "loading") {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
 
   if (status === "unauthenticated") {
-    return <div>Unauthenticated</div>;
+    return <div>Access denied</div>;
   }
 
   return (
     <div className="flex flex-col p-4">
+      {/* DELETE ALL RECORDS */}
+      <div>
+        <Button
+          onClick={() => deleteAllPersonsMutation.mutate()}
+          variant="destructive"
+        >
+          Delete All Persons
+        </Button>
+      </div>
+
       <h1>Questions</h1>
 
       <ul>
         {data?.map((question) => (
-          <Question question={question} refetch={refetch} key={question.id} />
+          <EditQuestion
+            question={question}
+            refetch={refetch}
+            key={question.id}
+          />
         ))}
       </ul>
 
@@ -48,8 +65,7 @@ const EditQuestions: NextPage = () => {
               }}
             />
           </label>
-          <button
-            className="border border-slate-500 p-1"
+          <Button
             disabled={addWithAnswersMutation.isLoading || questionText === ""}
             onClick={() => {
               addWithAnswersMutation.mutate({
@@ -59,7 +75,7 @@ const EditQuestions: NextPage = () => {
             }}
           >
             Add question
-          </button>
+          </Button>
         </div>
 
         {answers.map((answer, index) => (
@@ -81,35 +97,19 @@ const EditQuestions: NextPage = () => {
             </label>
 
             {index === answers.length - 1 && (
-              <button
-                className="border border-slate-500 p-1"
+              <Button
                 onClick={() => {
                   setAnswers([...answers, ""]);
                 }}
               >
                 Add answer
-              </button>
+              </Button>
             )}
           </div>
         ))}
-
-        <div>
-          <button
-            className="border border-slate-500 p-1"
-            disabled={addWithAnswersMutation.isLoading || questionText === ""}
-            onClick={() => {
-              addWithAnswersMutation.mutate({
-                text: questionText,
-                answers: answers.filter((answer) => answer !== ""),
-              });
-            }}
-          >
-            Add question
-          </button>
-        </div>
       </div>
     </div>
   );
 };
 
-export default EditQuestions;
+export default Admin;
