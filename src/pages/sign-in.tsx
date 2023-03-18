@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { Button } from "../components/ui/button";
 import { trpc } from "../utils/trpc";
 
 const SignIn: NextPage = () => {
@@ -26,12 +27,9 @@ const AuthShowcase = () => {
         {sessionData && <span>Logged in as {sessionData.user?.email}</span>}
         {secretMessage && <span> - {secretMessage}</span>}
       </p>
-      <button
-        className="rounded-md border-4 border-primary px-4 py-2 text-3xl text-primary"
-        onClick={sessionData ? () => signOut() : () => signIn()}
-      >
+      <Button onClick={sessionData ? () => signOut() : () => signIn()}>
         {sessionData ? "Sign out" : "Sign in"}
-      </button>
+      </Button>
     </div>
   );
 };

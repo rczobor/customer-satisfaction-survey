@@ -1,6 +1,7 @@
 import { Answer } from "@prisma/client";
 import { useState } from "react";
 import { trpc } from "../utils/trpc";
+import { Button } from "./ui/button";
 
 const EditAnswer = ({
   answer,
@@ -35,7 +36,7 @@ const EditAnswer = ({
   });
 
   return (
-    <li className="flex gap-2">
+    <li className="flex gap-2 py-1">
       <label>
         Answer:
         <input
@@ -48,9 +49,8 @@ const EditAnswer = ({
         />
       </label>
 
-      <div>
-        <button
-          className="border border-slate-500 p-1"
+      <div className="flex gap-2">
+        <Button
           onClick={() => {
             if (!answer) {
               addAnswer.mutate({ text, questionId });
@@ -61,12 +61,11 @@ const EditAnswer = ({
           }}
         >
           {answer ? "Update" : "Add"}
-        </button>
+        </Button>
 
         {answer && (
           <>
-            <button
-              className="border border-slate-500 p-1"
+            <Button
               onClick={() =>
                 updateIsActive.mutate({
                   id: answer.id,
@@ -75,14 +74,11 @@ const EditAnswer = ({
               }
             >
               {answer.isActive ? "Deactivate" : "Activate"}
-            </button>
+            </Button>
 
-            <button
-              className="border border-slate-500 p-1"
-              onClick={() => deleteMutation.mutate({ id: answer.id })}
-            >
+            <Button onClick={() => deleteMutation.mutate({ id: answer.id })}>
               Delete
-            </button>
+            </Button>
           </>
         )}
       </div>

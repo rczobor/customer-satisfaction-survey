@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import EditQuestion from "../components/edit-question";
+import { Button } from "../components/ui/button";
 import { trpc } from "../utils/trpc";
 
 const Admin: NextPage = () => {
@@ -16,7 +17,7 @@ const Admin: NextPage = () => {
       setAnswers([""]);
     },
   });
-  // const deleteAllPersonsMutation = trpc.person.deleteAll.useMutation();
+  const deleteAllPersonsMutation = trpc.person.deleteAll.useMutation();
 
   if (status === "loading") {
     return <div>Loading...</div>;
@@ -29,14 +30,14 @@ const Admin: NextPage = () => {
   return (
     <div className="flex flex-col p-4">
       {/* DELETE ALL RECORDS */}
-      {/* <div>
-        <button
-          className="border border-slate-500 bg-red-400 p-1"
+      <div>
+        <Button
           onClick={() => deleteAllPersonsMutation.mutate()}
+          variant="destructive"
         >
           Delete All Persons
-        </button>
-      </div> */}
+        </Button>
+      </div>
 
       <h1>Questions</h1>
 
@@ -63,8 +64,7 @@ const Admin: NextPage = () => {
               }}
             />
           </label>
-          <button
-            className="border border-slate-500 p-1"
+          <Button
             disabled={addWithAnswersMutation.isLoading || questionText === ""}
             onClick={() => {
               addWithAnswersMutation.mutate({
@@ -74,7 +74,7 @@ const Admin: NextPage = () => {
             }}
           >
             Add question
-          </button>
+          </Button>
         </div>
 
         {answers.map((answer, index) => (
@@ -96,32 +96,16 @@ const Admin: NextPage = () => {
             </label>
 
             {index === answers.length - 1 && (
-              <button
-                className="border border-slate-500 p-1"
+              <Button
                 onClick={() => {
                   setAnswers([...answers, ""]);
                 }}
               >
                 Add answer
-              </button>
+              </Button>
             )}
           </div>
         ))}
-
-        <div>
-          <button
-            className="border border-slate-500 p-1"
-            disabled={addWithAnswersMutation.isLoading || questionText === ""}
-            onClick={() => {
-              addWithAnswersMutation.mutate({
-                text: questionText,
-                answers: answers.filter((answer) => answer !== ""),
-              });
-            }}
-          >
-            Add question
-          </button>
-        </div>
       </div>
     </div>
   );
