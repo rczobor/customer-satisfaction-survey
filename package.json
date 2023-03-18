@@ -1,6 +1,6 @@
 {
   "name": "customer-satisfaction-survey-auth",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "build": "next build",
