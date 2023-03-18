@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { trpc } from "../utils/trpc";
+import { Button } from "./ui/button";
 
 // Amount of seconds before the user is redirected to the first question
 const TIMEOUT = 180;
@@ -59,12 +60,13 @@ const Questions = () => {
     <>
       {index > 0 && (
         <div className="absolute flex w-full p-8">
-          <button
+          <Button
             onClick={() => setIndex((current) => current - 1)}
-            className="rounded-md border-4 border-primary px-4 py-2 text-3xl text-primary"
+            className="h-14 rounded-md border-4 border-primary px-4 py-2 text-3xl text-primary"
+            variant="outline"
           >
             Vissza
-          </button>
+          </Button>
         </div>
       )}
       <NthQuestion question={data[index]} next={nextQuestion} />;
