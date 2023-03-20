@@ -31,7 +31,7 @@ const Admin: NextPage = () => {
   }
 
   return (
-    <div className="flex flex-col p-4">
+    <div className="flex flex-col p-8">
       <div>
         <Button
           onClick={() => deleteAllPersonsMutation.mutate()}
