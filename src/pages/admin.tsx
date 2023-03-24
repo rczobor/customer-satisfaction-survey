@@ -17,7 +17,7 @@ const Admin: NextPage = () => {
     onSuccess: () => {
       refetch();
       setQuestionText("");
-      setAnswers([""]);
+      setAnswers(["", ""]);
     },
   });
   const deleteAllPersonsMutation = trpc.person.deleteAll.useMutation();
@@ -94,11 +94,7 @@ const Admin: NextPage = () => {
           </Button>
 
           <Button
-            disabled={
-              addWithAnswersMutation.isLoading ||
-              questionText === "" ||
-              answers.filter((answer) => answer !== "").length < 2
-            }
+            disabled={addWithAnswersMutation.isLoading || questionText === ""}
             onClick={() => {
               addWithAnswersMutation.mutate({
                 text: questionText,

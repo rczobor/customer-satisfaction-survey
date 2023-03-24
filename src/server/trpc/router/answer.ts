@@ -13,7 +13,7 @@ export const answerRouter = router({
       return ctx.prisma.answer.create({
         data: {
           text: "",
-          isActive: false,
+          isActive: true,
           index: answerCount,
           question: {
             connect: { id: input.questionId },

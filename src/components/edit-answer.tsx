@@ -72,6 +72,10 @@ const EditAnswer = ({
         {answer && (
           <>
             <Button
+              className={
+                answer.isActive ? "bg-green-500 hover:bg-green-600" : ""
+              }
+              variant={answer.isActive ? "default" : "destructive"}
               onClick={() =>
                 updateIsActive.mutate({
                   id: answer.id,
@@ -79,7 +83,7 @@ const EditAnswer = ({
                 })
               }
             >
-              {answer.isActive ? "Deactivate" : "Activate"}
+              {answer.isActive ? "Active" : "Inactive"}
             </Button>
 
             <Button
