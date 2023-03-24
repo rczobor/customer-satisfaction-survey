@@ -4,18 +4,20 @@ import { useState } from "react";
 import EditQuestion from "../components/edit-question";
 import Spinner from "../components/spinner";
 import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
 import { trpc } from "../utils/trpc";
 
 const Admin: NextPage = () => {
   const { status } = useSession();
   const [questionText, setQuestionText] = useState("");
-  const [answers, setAnswers] = useState([""]);
+  const [answers, setAnswers] = useState(["", ""]);
   const { data, refetch } = trpc.question.getAll.useQuery();
   const addWithAnswersMutation = trpc.question.addWithAnswers.useMutation({
     onSuccess: () => {
       refetch();
       setQuestionText("");
-      setAnswers([""]);
+      setAnswers(["", ""]);
     },
   });
   const deleteAllPersonsMutation = trpc.person.deleteAll.useMutation();
@@ -29,8 +31,7 @@ const Admin: NextPage = () => {
   }
 
   return (
-    <div className="flex flex-col p-4">
-      {/* DELETE ALL RECORDS */}
+    <div className="flex flex-col p-8">
       <div>
         <Button
           onClick={() => deleteAllPersonsMutation.mutate()}
@@ -40,31 +41,58 @@ const Admin: NextPage = () => {
         </Button>
       </div>
 
-      <h1>Questions</h1>
-
       <ul>
         {data?.map((question) => (
           <EditQuestion
             question={question}
+            isLast={data.length - 1 === question.index}
             refetch={refetch}
             key={question.id}
           />
         ))}
       </ul>
 
-      <div className="flex flex-col gap-2">
-        <div>
-          <label>
-            <span>Text of question</span>
-            <input
-              className="mx-4 border border-slate-500"
+      <div className="flex w-fit flex-col gap-2">
+        <fieldset className="flex">
+          <Label>Text of question</Label>
+          <Input
+            type="text"
+            value={questionText}
+            onChange={(e) => {
+              setQuestionText(e.target.value);
+            }}
+          />
+        </fieldset>
+
+        {answers.map((answer, index) => (
+          <div key={index} className="flex items-center gap-2 text-center">
+            <Label htmlFor={`answer-text-input-${index}`}>
+              {index + 1}# answer
+            </Label>
+            <Input
+              id={`answer-text-input-${index}`}
               type="text"
-              value={questionText}
+              value={answer}
               onChange={(e) => {
-                setQuestionText(e.target.value);
+                setAnswers((prev) => {
+                  const copy = [...prev];
+                  copy[index] = e.target.value;
+                  return copy;
+                });
               }}
             />
-          </label>
+          </div>
+        ))}
+
+        <div className="flex gap-2">
+          <Button
+            onClick={() => {
+              setAnswers([...answers, ""]);
+            }}
+          >
+            Add answer
+          </Button>
+
           <Button
             disabled={addWithAnswersMutation.isLoading || questionText === ""}
             onClick={() => {
@@ -74,39 +102,9 @@ const Admin: NextPage = () => {
               });
             }}
           >
-            Add question
+            Save question
           </Button>
         </div>
-
-        {answers.map((answer, index) => (
-          <div key={index}>
-            <label>
-              <span>{index + 1}# answer</span>
-              <input
-                className="mx-4 border border-slate-500"
-                type="text"
-                value={answer}
-                onChange={(e) => {
-                  setAnswers((prev) => {
-                    const copy = [...prev];
-                    copy[index] = e.target.value;
-                    return copy;
-                  });
-                }}
-              />
-            </label>
-
-            {index === answers.length - 1 && (
-              <Button
-                onClick={() => {
-                  setAnswers([...answers, ""]);
-                }}
-              >
-                Add answer
-              </Button>
-            )}
-          </div>
-        ))}
       </div>
     </div>
   );

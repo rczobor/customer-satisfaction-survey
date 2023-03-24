@@ -1,24 +1,23 @@
 import type { Answer } from "@prisma/client";
+import { ArrowDown, ArrowUp, Save, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { trpc } from "../utils/trpc";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 
 const EditAnswer = ({
-  answer,
   questionId,
+  answer,
+  isLast,
   refetch,
 }: {
-  answer?: Answer;
   questionId: string;
+  answer: Answer;
+  isLast: boolean;
   refetch: () => void;
 }) => {
   const [text, setText] = useState(answer?.text ?? "");
-  const addAnswer = trpc.answer.add.useMutation({
-    onSuccess: () => {
-      refetch();
-      setText("");
-    },
-  });
   const updateText = trpc.answer.updateText.useMutation({
     onSuccess: () => {
       refetch();
@@ -34,38 +33,49 @@ const EditAnswer = ({
       refetch();
     },
   });
+  const moveUpByIndex = trpc.answer.moveUpByIndex.useMutation({
+    onSuccess: () => {
+      refetch();
+    },
+  });
+  const moveDownByIndex = trpc.answer.moveDownByIndex.useMutation({
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
   return (
     <li className="flex gap-2 py-1">
-      <label>
-        Answer:
-        <input
+      <fieldset className="flex items-center gap-2 text-center">
+        <Label htmlFor={`answer-text-input-${answer.id}`}>
+          {answer.index + 1}# Answer
+        </Label>
+        <Input
+          id={`answer-text-input-${answer.id}`}
           type="text"
-          className="mx-4 border border-slate-500"
           value={text}
           onChange={(e) => {
             setText(e.target.value);
           }}
         />
-      </label>
+      </fieldset>
 
       <div className="flex gap-2">
         <Button
           onClick={() => {
-            if (!answer) {
-              addAnswer.mutate({ text, questionId });
-              return;
-            }
-
             updateText.mutate({ id: answer.id, text });
           }}
         >
-          {answer ? "Update" : "Add"}
+          <Save />
         </Button>
 
         {answer && (
           <>
             <Button
+              className={
+                answer.isActive ? "bg-green-500 hover:bg-green-600" : ""
+              }
+              variant={answer.isActive ? "default" : "destructive"}
               onClick={() =>
                 updateIsActive.mutate({
                   id: answer.id,
@@ -73,11 +83,42 @@ const EditAnswer = ({
                 })
               }
             >
-              {answer.isActive ? "Deactivate" : "Activate"}
+              {answer.isActive ? "Active" : "Inactive"}
             </Button>
 
-            <Button onClick={() => deleteMutation.mutate({ id: answer.id })}>
-              Delete
+            <Button
+              disabled={answer.index === 0}
+              onClick={() => {
+                moveUpByIndex.mutate({
+                  questionId,
+                  id: answer.id,
+                  index: answer.index,
+                });
+              }}
+            >
+              <ArrowUp />
+            </Button>
+
+            <Button
+              disabled={isLast}
+              onClick={() => {
+                moveDownByIndex.mutate({
+                  questionId,
+                  id: answer.id,
+                  index: answer.index,
+                });
+              }}
+            >
+              <ArrowDown />
+            </Button>
+
+            <Button
+              variant="destructive"
+              onClick={() =>
+                deleteMutation.mutate({ id: answer.id, index: answer.index })
+              }
+            >
+              <Trash2 />
             </Button>
           </>
         )}

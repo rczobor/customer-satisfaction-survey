@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model User {
@@ -25,7 +26,7 @@ model Question {
   updatedAt DateTime @updatedAt
 
   text     String
-  index    Int      @default(autoincrement())
+  index    Int
   isActive Boolean  @default(true)
   isInput  Boolean  @default(false)
   isSmiley Boolean  @default(false)
@@ -39,11 +40,13 @@ model Answer {
   updatedAt DateTime @updatedAt
 
   text       String
-  index      Int      @default(autoincrement())
+  index      Int
   isActive   Boolean  @default(true)
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
   Records    Record[]
+
+  @@index([questionId])
 }
 
 model Record {
@@ -58,6 +61,10 @@ model Record {
   questionId String
   Person     Person?  @relation(fields: [personId], references: [id], onDelete: Cascade)
   personId   String?
+
+  @@index([answerId])
+  @@index([questionId])
+  @@index([personId])
 }
 
 model Person {
