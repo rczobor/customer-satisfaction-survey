@@ -4,6 +4,7 @@ import {
   ArrowUp,
   Keyboard,
   List,
+  PlusIcon,
   Save,
   Smile,
   Trash2,
@@ -196,7 +197,7 @@ const EditQuestion = ({
                 addAnswer.mutate({ questionId: question.id });
               }}
             >
-              Add
+              <PlusIcon />
             </Button>
           </li>
         </ul>
