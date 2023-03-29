@@ -178,7 +178,7 @@ const EditQuestion = ({
         </Button>
       </div>
 
-      {!(question.isInput || question.isSmiley) && (
+      {!question.isInput && (
         <ul>
           {question.answers.map((answer) => (
             <EditAnswer
