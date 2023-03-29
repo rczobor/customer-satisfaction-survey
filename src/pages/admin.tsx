@@ -1,3 +1,4 @@
+import { PlusIcon } from "lucide-react";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
@@ -32,12 +33,12 @@ const Admin: NextPage = () => {
 
   return (
     <div className="flex flex-col p-8">
-      <div>
+      <div className="flex justify-end pb-4">
         <Button
           onClick={() => deleteAllPersonsMutation.mutate()}
           variant="destructive"
         >
-          Delete All Persons
+          Delete All Answers
         </Button>
       </div>
 
@@ -90,7 +91,7 @@ const Admin: NextPage = () => {
               setAnswers([...answers, ""]);
             }}
           >
-            Add answer
+            <PlusIcon />
           </Button>
 
           <Button
