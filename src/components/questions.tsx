@@ -79,7 +79,7 @@ const Questions = () => {
       )}
       {index === -1 ? (
         <div
-          className="flex min-h-screen cursor-pointer flex-col items-center justify-center gap-64 p-6 "
+          className="flex min-h-screen cursor-pointer flex-col items-center justify-evenly p-6 "
           onClick={() => setIndex(0)}
         >
           <Image
