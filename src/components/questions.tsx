@@ -8,12 +8,12 @@ import Spinner from "./spinner";
 import { Button } from "./ui/button";
 
 // Amount of seconds before the user is redirected to the first question
-const TIMEOUT = 180;
+const TIMEOUT = 300;
 
 const Questions = () => {
   const { push } = useRouter();
   const { data, isLoading } = trpc.question.getAll.useQuery();
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(-1);
   const [answers, setAnswers] = useState<{
     [key: string]: { isInput: boolean; answer: string };
   }>({});
@@ -34,15 +34,18 @@ const Questions = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeLeft((currentTimeLeft) => currentTimeLeft - 1);
+      if (index >= 0) {
+        setTimeLeft((currentTimeLeft) => currentTimeLeft - 1);
+      }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [index]);
 
   useEffect(() => {
-    if (timeLeft <= 0 && index !== 0) {
-      setIndex(0);
+    if (timeLeft <= 0 && index >= 0) {
+      setIndex(-1);
+      setTimeLeft(TIMEOUT);
     }
   }, [timeLeft, index]);
 
@@ -74,7 +77,25 @@ const Questions = () => {
           </Button>
         </div>
       )}
-      <NthQuestion question={data[index]} next={nextQuestion} />;
+      {index === -1 ? (
+        <div
+          className="flex min-h-screen cursor-pointer flex-col items-center justify-center gap-64 p-6 "
+          onClick={() => setIndex(0)}
+        >
+          <Image
+            src="/caringmedicallogo.png"
+            alt="caring medical logo"
+            width={750}
+            height={215}
+            priority={true}
+          />
+          <h2 className="text-center text-6xl font-bold text-primary">
+            A kérdőív kitöltéséhez érintse meg a képernyőt!
+          </h2>
+        </div>
+      ) : (
+        <NthQuestion question={data[index]} next={nextQuestion} />
+      )}
     </>
   );
 };
@@ -97,81 +118,67 @@ const NthQuestion = ({
   }
 
   return (
-    <div className="flex flex-col justify-center">
-      <div className="p-48" />
+    <div className="flex min-h-screen flex-col justify-evenly">
       <h1 className="px-4 text-center text-6xl font-bold text-primary">
         {question.text}
       </h1>
       {question.isInput && (
-        <>
-          <div className="p-48" />
-          <form
-            className="flex justify-center"
-            onSubmit={handleSubmit((form) => {
-              next(question.id, question.isInput, form.answer);
-            })}
-          >
-            <input
-              className="rounded-md border px-4 py-2 text-5xl font-semibold text-primary shadow-lg transition"
-              type="text"
-              {...register("answer", { required: true })}
-              placeholder="Írd be a választ"
-              autoComplete="off"
-              autoFocus={true}
-            />
-            <input
-              className="cursor-pointer rounded-md border bg-primary px-10 py-2 text-5xl font-semibold text-white shadow-lg transition hover:bg-white hover:text-primary"
-              type="submit"
-              value="Kész"
-            />
-          </form>
-        </>
+        <form
+          className="flex justify-center"
+          onSubmit={handleSubmit((form) => {
+            next(question.id, question.isInput, form.answer);
+          })}
+        >
+          <input
+            className="rounded-md border px-4 py-2 text-5xl font-semibold text-primary shadow-lg outline-none ring-primary transition focus-visible:ring-2"
+            type="text"
+            {...register("answer", { required: true })}
+            placeholder="Írja be a választ"
+            autoComplete="off"
+            autoFocus={true}
+          />
+          <input
+            className="cursor-pointer rounded-md border bg-primary px-10 py-2 text-5xl font-semibold text-white shadow-lg transition hover:bg-white hover:text-primary"
+            type="submit"
+            value="Kész"
+          />
+        </form>
       )}
       {question.isSmiley ? (
-        <>
-          <div className="p-48" />
-          <div className="flex justify-center gap-8">
-            {question.answers.map((answer, index) => {
-              return (
-                <div key={answer.id} className="flex justify-center">
-                  <button
-                    onClick={() =>
-                      next(question.id, question.isInput, answer.id)
-                    }
-                    className="w-full p-4"
-                  >
-                    <Image
-                      src={`/${index + 1}-modified.png`}
-                      alt={answer.text.toString()}
-                      width={125}
-                      height={125}
-                    />
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        </>
+        <div className="flex justify-center gap-8">
+          {question.answers.map((answer, index) => {
+            return (
+              <div key={answer.id} className="flex justify-center">
+                <button
+                  onClick={() => next(question.id, question.isInput, answer.id)}
+                  className="w-full p-4"
+                >
+                  <Image
+                    src={`/${index + 1}-modified.png`}
+                    alt={answer.text.toString()}
+                    width={125}
+                    height={125}
+                  />
+                </button>
+              </div>
+            );
+          })}
+        </div>
       ) : (
-        <>
-          <div className="p-24" />
-          <div className="flex flex-col gap-20 px-48">
-            {question.answers.map((answer) => {
-              return (
-                <div key={answer.id} className="flex justify-center">
-                  <button
-                    onClick={() =>
-                      next(question.id, question.isInput, answer.id)
-                    }
-                    className="w-full bg-primary p-4 text-center text-5xl text-white"
-                  >
-                    {answer.text}
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        </>
+        <div className="flex flex-col gap-20 px-48">
+          {question.answers.map((answer) => {
+            return (
+              <div key={answer.id} className="flex justify-center">
+                <button
+                  onClick={() => next(question.id, question.isInput, answer.id)}
+                  className="w-full bg-primary p-4 text-center text-5xl text-white"
+                >
+                  {answer.text}
+                </button>
+              </div>
+            );
+          })}
+        </div>
       )}
     </div>
   );

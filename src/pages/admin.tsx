@@ -1,6 +1,6 @@
 import { PlusIcon } from "lucide-react";
 import type { NextPage } from "next";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 import EditQuestion from "../components/edit-question";
 import Spinner from "../components/spinner";
@@ -21,6 +21,7 @@ const Admin: NextPage = () => {
       setAnswers(["", ""]);
     },
   });
+  const { data: sessionData } = useSession();
   const deleteAllPersonsMutation = trpc.person.deleteAll.useMutation();
 
   if (status === "loading") {
@@ -33,13 +34,20 @@ const Admin: NextPage = () => {
 
   return (
     <div className="flex flex-col p-8">
-      <div className="flex justify-end pb-4">
+      <div className="flex justify-end gap-4 pb-4">
         <Button
           onClick={() => deleteAllPersonsMutation.mutate()}
           variant="destructive"
         >
           Delete All Answers
         </Button>
+
+        <div className="flex w-fit flex-col items-center gap-4">
+          <div>Logged in as {sessionData?.user?.email}</div>
+          <Button variant="outline" onClick={() => signOut()}>
+            Sign Out
+          </Button>
+        </div>
       </div>
 
       <ul>
