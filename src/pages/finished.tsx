@@ -20,7 +20,6 @@ const Finished = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-around p-6 text-center text-5xl text-primary">
-      <div></div>
       <h1 className="font-semibold">A válaszait rögzítettük.</h1>
       <h2 className="font-semibold">
         Köszönjük, hogy kitöltötte kérdőívünket!
