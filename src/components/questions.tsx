@@ -4,8 +4,9 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { trpc } from "../utils/trpc";
-import Logo from "./logo";
+import CornerLogo from "./corner-logo";
 import Spinner from "./spinner";
+import StartLogo from "./start-logo";
 import { Button } from "./ui/button";
 
 // Amount of seconds before the user is redirected to the first question
@@ -83,7 +84,7 @@ const Questions = () => {
           className="flex min-h-screen cursor-pointer flex-col items-center justify-evenly p-6 "
           onClick={() => setIndex(0)}
         >
-          <Logo />
+          <StartLogo />
           <h2 className="text-center text-6xl font-bold text-primary">
             A kérdőív kitöltéséhez érintse meg a képernyőt!
           </h2>
@@ -114,6 +115,9 @@ const NthQuestion = ({
 
   return (
     <div className="flex min-h-screen flex-col justify-evenly">
+      <div className="absolute right-0 top-0">
+        <CornerLogo />
+      </div>
       <h1 className="px-4 text-center text-6xl font-bold text-primary">
         {question.text}
       </h1>
