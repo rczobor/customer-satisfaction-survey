@@ -17,12 +17,18 @@ export const personRouter = router({
           return {
             question: { connect: { id: questionId } },
             text: answer.answer,
+            user: {
+              connect: { id: ctx.session.user.id },
+            },
           };
         }
 
         return {
           question: { connect: { id: questionId } },
           answer: { connect: { id: answer.answer } },
+          user: {
+            connect: { id: ctx.session.user.id },
+          },
         };
       });
 
@@ -30,6 +36,9 @@ export const personRouter = router({
         data: {
           records: {
             create: records,
+          },
+          user: {
+            connect: { id: ctx.session.user.id },
           },
         },
       });

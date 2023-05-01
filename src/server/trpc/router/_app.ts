@@ -4,6 +4,7 @@ import { authRouter } from "./auth";
 import { personRouter } from "./person";
 import { questionRouter } from "./question";
 import { recordRouter } from "./record";
+import { userRouter } from "./user";
 
 export const appRouter = router({
   auth: authRouter,
@@ -11,6 +12,7 @@ export const appRouter = router({
   answer: answerRouter,
   record: recordRouter,
   person: personRouter,
+  user: userRouter,
 });
 
 // export type definition of API

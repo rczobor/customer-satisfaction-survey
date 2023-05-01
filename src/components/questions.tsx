@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { trpc } from "../utils/trpc";
+import Logo from "./logo";
 import Spinner from "./spinner";
 import { Button } from "./ui/button";
 
@@ -82,13 +83,7 @@ const Questions = () => {
           className="flex min-h-screen cursor-pointer flex-col items-center justify-evenly p-6 "
           onClick={() => setIndex(0)}
         >
-          <Image
-            src="/caringmedicallogo.png"
-            alt="caring medical logo"
-            width={750}
-            height={215}
-            priority={true}
-          />
+          <Logo />
           <h2 className="text-center text-6xl font-bold text-primary">
             A kérdőív kitöltéséhez érintse meg a képernyőt!
           </h2>

@@ -18,6 +18,9 @@ export const answerRouter = router({
           question: {
             connect: { id: input.questionId },
           },
+          user: {
+            connect: { id: ctx.session.user.id },
+          },
         },
       });
     }),

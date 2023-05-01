@@ -13,6 +13,9 @@ export const recordRouter = router({
           question: {
             connect: { id: input.questionId },
           },
+          user: {
+            connect: { id: ctx.session.user.id },
+          },
         },
       });
     }),
@@ -24,6 +27,9 @@ export const recordRouter = router({
           text: input.text,
           question: {
             connect: { id: input.questionId },
+          },
+          user: {
+            connect: { id: ctx.session.user.id },
           },
         },
       });
