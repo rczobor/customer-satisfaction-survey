@@ -4,6 +4,7 @@ import { protectedProcedure, router } from "../trpc";
 export const questionRouter = router({
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.question.findMany({
+      where: { userId: ctx.session.user.id },
       orderBy: { index: "asc" },
       include: {
         answers: {
@@ -17,7 +18,11 @@ export const questionRouter = router({
     .query(async ({ ctx, input }) => {
       const [result, next] = await ctx.prisma.question.findMany({
         orderBy: { index: "asc" },
-        where: { isActive: true, index: { gte: input.index } },
+        where: {
+          isActive: true,
+          index: { gte: input.index },
+          userId: ctx.session.user.id,
+        },
         include: {
           answers: {
             orderBy: { index: "asc" },
@@ -46,7 +51,16 @@ export const questionRouter = router({
           text: input.text,
           index: questionCount,
           answers: {
-            create: input.answers.map((text, index) => ({ text, index })),
+            create: input.answers.map((text, index) => ({
+              text,
+              index,
+              user: {
+                connect: { id: ctx.session.user.id },
+              },
+            })),
+          },
+          user: {
+            connect: { id: ctx.session.user.id },
           },
         },
       });

@@ -18,6 +18,12 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String
+  color         String?
+
+  questions Question[]
+  answers   Answer[]
+  records   Record[]
+  Person    Person[]
 }
 
 model Question {
@@ -27,11 +33,17 @@ model Question {
 
   text     String
   index    Int
-  isActive Boolean  @default(true)
-  isInput  Boolean  @default(false)
-  isSmiley Boolean  @default(false)
-  answers  Answer[]
-  records  Record[]
+  isActive Boolean @default(true)
+  isInput  Boolean @default(false)
+  isSmiley Boolean @default(false)
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  answers Answer[]
+  records Record[]
+
+  @@index([userId])
 }
 
 model Answer {
@@ -39,14 +51,19 @@ model Answer {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  text       String
-  index      Int
-  isActive   Boolean  @default(true)
+  text     String
+  index    Int
+  isActive Boolean @default(true)
+
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
-  Records    Record[]
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+
+  Records Record[]
 
   @@index([questionId])
+  @@index([userId])
 }
 
 model Record {
@@ -54,17 +71,21 @@ model Record {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  text       String?
+  text String?
+
   answer     Answer?  @relation(fields: [answerId], references: [id], onDelete: Cascade)
   answerId   String?
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
   Person     Person?  @relation(fields: [personId], references: [id], onDelete: Cascade)
   personId   String?
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
 
   @@index([answerId])
   @@index([questionId])
   @@index([personId])
+  @@index([userId])
 }
 
 model Person {
@@ -72,5 +93,11 @@ model Person {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  // userId String @default("clglgb9nv0000g94gt25ns9e3")
+
   records Record[]
+
+  @@index([userId])
 }
