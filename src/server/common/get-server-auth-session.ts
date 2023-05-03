@@ -17,12 +17,12 @@ export const getServerAuthSession = async (ctx: {
 
 export const loginSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(4).max(12),
+  password: z.string().min(4).max(64),
 });
 
 export const signUpSchema = loginSchema.extend({
   email: z.string().email(),
-  password: z.string().min(4).max(12),
+  password: z.string().min(4).max(64),
   secret: z.string(),
 });
 
