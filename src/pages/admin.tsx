@@ -22,7 +22,7 @@ const Admin: NextPage = () => {
     },
   });
   const { data: sessionData } = useSession();
-  const deleteAllPersonsMutation = trpc.person.deleteAll.useMutation();
+  // const deleteAllPersonsMutation = trpc.person.deleteAll.useMutation();
 
   if (status === "loading") {
     return <Spinner />;
@@ -35,17 +35,17 @@ const Admin: NextPage = () => {
   return (
     <div className="flex flex-col p-8">
       <div className="flex justify-end gap-4 pb-4">
-        <Button
+        {/* <Button
           onClick={() => deleteAllPersonsMutation.mutate()}
           variant="destructive"
         >
           Delete All Answers
-        </Button>
+        </Button> */}
 
         <div className="flex w-fit flex-col items-center gap-4">
           <div>Logged in as {sessionData?.user?.email}</div>
           <Button variant="outline" onClick={() => signOut()}>
-            Sign Out
+            Kijelentkezés
           </Button>
         </div>
       </div>
@@ -63,7 +63,7 @@ const Admin: NextPage = () => {
 
       <div className="flex w-fit flex-col gap-2">
         <fieldset className="flex">
-          <Label>Text of question</Label>
+          <Label>Kérdés szöveg</Label>
           <Input
             type="text"
             value={questionText}
@@ -76,7 +76,7 @@ const Admin: NextPage = () => {
         {answers.map((answer, index) => (
           <div key={index} className="flex items-center gap-2 text-center">
             <Label htmlFor={`answer-text-input-${index}`}>
-              {index + 1}# answer
+              {index + 1}# Válasz szöveg
             </Label>
             <Input
               id={`answer-text-input-${index}`}
@@ -111,7 +111,7 @@ const Admin: NextPage = () => {
               });
             }}
           >
-            Save question
+            Mentés
           </Button>
         </div>
       </div>
