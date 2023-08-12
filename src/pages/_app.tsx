@@ -14,7 +14,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   if (typeof window !== "undefined" && data?.color) {
     const root = document.querySelector<HTMLElement>(":root");
-    root?.style.setProperty("--primary", "50 21.5% 52.5%");
+    root?.style.setProperty("--primary", data.color);
   }
 
   return (
