@@ -9,6 +9,7 @@ import {
   Smile,
   Trash2,
 } from "lucide-react";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { trpc } from "../utils/trpc";
 import EditAnswer from "./edit-answer";
@@ -25,6 +26,7 @@ const EditQuestion = ({
   isLast: boolean;
   refetch: () => void;
 }) => {
+  const router = useRouter();
   const [questionText, setQuestionText] = useState(question.text);
   const updateText = trpc.question.updateText.useMutation({
     onSuccess: () => {
@@ -77,7 +79,7 @@ const EditQuestion = ({
       <div className="flex gap-2">
         <fieldset className="flex items-center gap-2 text-center">
           <Label htmlFor={`question-text-input-${question.id}`}>
-            {question.index + 1}# Question text
+            {question.index + 1}# Kérdés szöveg
           </Label>
           <Input
             id={`question-text-input-${question.id}`}
@@ -88,7 +90,6 @@ const EditQuestion = ({
             }}
           />
         </fieldset>
-
         <Button
           onClick={() =>
             updateText.mutate({ id: question.id, text: questionText })
@@ -96,7 +97,6 @@ const EditQuestion = ({
         >
           <Save />
         </Button>
-
         <Button
           className={question.isActive ? "bg-green-500 hover:bg-green-600" : ""}
           variant={question.isActive ? "default" : "destructive"}
@@ -107,9 +107,8 @@ const EditQuestion = ({
             })
           }
         >
-          {question.isActive ? "Active" : "Inactive"}
+          {question.isActive ? "Aktív" : "Inaktív"}
         </Button>
-
         <Button
           variant={
             !(question.isInput || question.isSmiley) ? "default" : "outline"
@@ -122,7 +121,6 @@ const EditQuestion = ({
         >
           <List />
         </Button>
-
         <Button
           variant={question.isInput ? "default" : "outline"}
           onClick={() =>
@@ -133,7 +131,6 @@ const EditQuestion = ({
         >
           <Keyboard />
         </Button>
-
         <Button
           variant={question.isSmiley ? "default" : "outline"}
           onClick={() =>
@@ -144,7 +141,6 @@ const EditQuestion = ({
         >
           <Smile />
         </Button>
-
         <Button
           disabled={question.index === 0}
           onClick={() => {
@@ -156,7 +152,6 @@ const EditQuestion = ({
         >
           <ArrowUp />
         </Button>
-
         <Button
           disabled={isLast}
           onClick={() => {
@@ -168,7 +163,6 @@ const EditQuestion = ({
         >
           <ArrowDown />
         </Button>
-
         <Button
           variant="destructive"
           onClick={() =>
@@ -176,6 +170,9 @@ const EditQuestion = ({
           }
         >
           <Trash2 />
+        </Button>
+        <Button onClick={() => router.push(`/question/${question.id}`)}>
+          Válaszok
         </Button>
       </div>
 

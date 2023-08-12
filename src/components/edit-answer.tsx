@@ -48,7 +48,7 @@ const EditAnswer = ({
     <li className="flex gap-2 py-1">
       <fieldset className="flex items-center gap-2 text-center">
         <Label htmlFor={`answer-text-input-${answer.id}`}>
-          {answer.index + 1}# Answer
+          {answer.index + 1}# Válasz szöveg
         </Label>
         <Input
           id={`answer-text-input-${answer.id}`}
@@ -83,7 +83,7 @@ const EditAnswer = ({
                 })
               }
             >
-              {answer.isActive ? "Active" : "Inactive"}
+              {answer.isActive ? "Aktív" : "Inaktív"}
             </Button>
 
             <Button

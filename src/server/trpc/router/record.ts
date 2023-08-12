@@ -37,4 +37,21 @@ export const recordRouter = router({
   deleteAll: protectedProcedure.mutation(({ ctx }) => {
     return ctx.prisma.record.deleteMany();
   }),
+  getAllForQuestion: protectedProcedure
+    .input(z.object({ questionId: z.string().optional() }))
+    .query(({ ctx, input }) => {
+      if (!input.questionId) {
+        return null;
+      }
+
+      return ctx.prisma.record.findMany({
+        where: {
+          questionId: input.questionId,
+        },
+        include: {
+          answer: true,
+          question: true,
+        },
+      });
+    }),
 });
