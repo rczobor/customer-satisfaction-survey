@@ -18,7 +18,6 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String
-  color         String? // to be removed after migration to hslColor
   hslColor      String?
 
   questions Question[]
