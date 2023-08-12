@@ -12,9 +12,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   const { data } = trpc.user.getUserBySession.useQuery();
 
-  if (typeof window !== "undefined" && data?.color) {
+  if (typeof window !== "undefined" && data?.hslColor) {
     const root = document.querySelector<HTMLElement>(":root");
-    root?.style.setProperty("--primary", data.color);
+    root?.style.setProperty("--primary", data.hslColor);
   }
 
   return (
