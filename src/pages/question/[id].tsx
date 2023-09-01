@@ -22,23 +22,25 @@ export default function Question() {
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Dátum</TableHead>
-          <TableHead>Válasz</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.map((record) => (
-          <TableRow key={record.id}>
-            <TableCell>{record.createdAt.toLocaleDateString("hu")}</TableCell>
-            <TableCell>
-              {record.question.isInput ? record.text : record.answer?.text}
-            </TableCell>
+    <div className="m-8">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Dátum</TableHead>
+            <TableHead>Válasz</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {data.map((record) => (
+            <TableRow key={record.id}>
+              <TableCell>{record.createdAt.toLocaleDateString("hu")}</TableCell>
+              <TableCell>
+                {record.question.isInput ? record.text : record.answer?.text}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 }
