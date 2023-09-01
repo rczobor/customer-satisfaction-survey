@@ -32,7 +32,7 @@ export default function Question() {
       <TableBody>
         {data.map((record) => (
           <TableRow key={record.id}>
-            <TableCell>{record.createdAt.toLocaleDateString()}</TableCell>
+            <TableCell>{record.createdAt.toLocaleDateString("hu")}</TableCell>
             <TableCell>
               {record.question.isInput ? record.text : record.answer?.text}
             </TableCell>
