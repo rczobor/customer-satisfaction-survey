@@ -52,6 +52,9 @@ export const recordRouter = router({
           answer: true,
           question: true,
         },
+        orderBy: {
+          createdAt: "desc",
+        },
       });
     }),
 });
